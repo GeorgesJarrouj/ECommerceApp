@@ -1,0 +1,128 @@
+﻿@using Microsoft.AspNetCore.Identity
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - ECommerceApp</title>
+
+    <link rel="shortcut icon" href="~/favicon.png" />
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="~/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/tiny-slider.css" />
+    <link rel="stylesheet" href="~/css/style.css" />
+</head>
+
+<body>
+
+    <!-- ===== NAVBAR (ONLY HERE) ===== -->
+    <nav class="custom-navbar navbar navbar-expand-md navbar-dark bg-dark" aria-label="Furni navigation bar">
+        <div class="container">
+            <a class="navbar-brand" asp-controller="Home" asp-action="Index">
+                Furni<span>.</span>
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsFurni"
+                    aria-controls="navbarsFurni" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarsFurni">
+
+                <ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Home" asp-action="Index">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Shop" asp-action="Index">Shop</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Home" asp-action="About">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Home" asp-action="Services">Services</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Blog" asp-action="Index">Blog</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Home" asp-action="Contact">Contact</a>
+                    </li>
+                </ul>
+
+                <ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5 align-items-md-center">
+
+                    <!-- Cart -->
+                    <li class="nav-item me-3">
+                        <a class="nav-link" asp-controller="Cart" asp-action="Index">
+                            <img src="~/images/cart.svg" alt="Cart" />
+                        </a>
+                    </li>
+
+                    <!-- Identity Login/Register/Logout -->
+                    <partial name="_LoginPartial" />
+                </ul>
+
+            </div>
+        </div>
+    </nav>
+    <!-- ===== END NAVBAR ===== -->
+    <!-- ===== PAGE CONTENT ===== -->
+    <main role="main">
+        @RenderBody()
+    </main>
+    <!-- ===== END PAGE CONTENT ===== -->
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer-section mt-5">
+        <div class="container relative">
+
+            <div class="sofa-img">
+                <img src="~/images/sofa.png" alt="Image" class="img-fluid">
+            </div>
+
+            <div class="row g-5 mb-5">
+                <div class="col-lg-4">
+                    <div class="mb-4 footer-logo-wrap">
+                        <a asp-controller="Home" asp-action="Index" class="footer-logo">Furni<span>.</span></a>
+                    </div>
+                    <p class="mb-4">
+                        Simple e-commerce project built with ASP.NET Core MVC &amp; Identity.
+                    </p>
+                </div>
+
+                <div class="col-lg-8">
+                    <div class="row links-wrap">
+                        <div class="col-6 col-sm-6 col-md-3">
+                            <ul class="list-unstyled">
+                                <li><a asp-controller="Home" asp-action="About">About</a></li>
+                                <li><a asp-controller="Home" asp-action="Services">Services</a></li>
+                                <li><a asp-controller="Blog" asp-action="Index">Blog</a></li>
+                                <li><a asp-controller="Home" asp-action="Contact">Contact</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-top copyright">
+                <div class="row pt-4">
+                    <div class="col-lg-6">
+                        <p class="mb-2 text-center text-lg-start">
+                            &copy; @DateTime.Now.Year - ECommerceApp
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- ===== END FOOTER ===== -->
+    <!-- JS -->
+    <script src="~/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/tiny-slider.js"></script>
+    <script src="~/js/custom.js"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

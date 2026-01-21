@@ -1,0 +1,70 @@
+﻿@model List<ECommerceApp.Models.CartItem>
+@{
+    ViewData["Title"] = "Cart";
+}
+
+<div class="hero">
+    <div class="container">
+        <div class="row justify-content-between">
+            <div class="col-lg-5">
+                <div class="intro-excerpt">
+                    <h1>Cart</h1>
+                </div>
+            </div>
+            <div class="col-lg-7"></div>
+        </div>
+    </div>
+</div>
+
+<div class="untree_co-section before-footer-section">
+    <div class="container">
+
+        @if (!Model.Any())
+        {
+            <p>Your cart is empty.</p>
+            <a class="btn btn-secondary" asp-controller="Shop" asp-action="Index">Go Shopping</a>
+        }
+        else
+        {
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th style="width:180px;">Quantity</th>
+                        <th>Price</th>
+                        <th>Subtotal</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        var subtotal = item.Product.Price * item.Quantity;
+                        <tr>
+                            <td>@item.Product.Name</td>
+                            <td>
+                                <form asp-controller="Cart" asp-action="Update" method="post" class="d-flex gap-2">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@item.Id" />
+                                    <input type="number" name="qty" value="@item.Quantity" min="0" class="form-control form-control-sm" />
+                                    <button class="btn btn-sm btn-outline-primary" type="submit">Update</button>
+                                </form>
+                            </td>
+                            <td>$@item.Product.Price</td>
+                            <td>$@subtotal</td>
+                            <td>
+                                <form asp-controller="Cart" asp-action="Remove" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@item.Id" />
+                                    <button class="btn btn-sm btn-danger" type="submit">Remove</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <a class="btn btn-primary" asp-controller="Checkout" asp-action="Index">Proceed to Checkout</a>
+        }
+    </div>
+</div>

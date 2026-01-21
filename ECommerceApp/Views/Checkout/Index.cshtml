@@ -1,0 +1,41 @@
+﻿@{
+    ViewData["Title"] = "Checkout";
+}
+
+<div class="hero">
+    <div class="container">
+        <div class="row justify-content-between">
+            <div class="col-lg-5">
+                <div class="intro-excerpt">
+                    <h1>Checkout</h1>
+                </div>
+            </div>
+            <div class="col-lg-7"></div>
+        </div>
+    </div>
+</div>
+
+<div class="untree_co-section before-footer-section">
+    <div class="container">
+        <form method="post" asp-controller="Checkout" asp-action="PlaceOrder">
+            @Html.AntiForgeryToken()
+
+            <div class="mb-3">
+                <label class="form-label">Full Name</label>
+                <input name="fullName" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Phone</label>
+                <input name="phone" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Address</label>
+                <input name="address" class="form-control" />
+            </div>
+
+            <button class="btn btn-primary" type="submit">Place Order</button>
+        </form>
+    </div>
+</div>

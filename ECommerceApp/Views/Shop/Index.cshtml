@@ -1,0 +1,57 @@
+﻿@model List<ECommerceApp.Models.Product>
+@{
+    ViewData["Title"] = "Shop";
+}
+
+<div class="hero">
+    <div class="container">
+        <div class="row justify-content-between">
+            <div class="col-lg-5">
+                <div class="intro-excerpt">
+                    <h1>Shop</h1>
+                </div>
+            </div>
+            <div class="col-lg-7"></div>
+        </div>
+    </div>
+</div>
+
+<div class="untree_co-section product-section before-footer-section">
+    <div class="container">
+        <div class="row">
+
+            @if (Model == null || !Model.Any())
+            {
+                <div class="col-12"><p>No products found.</p></div>
+            }
+            else
+            {
+                foreach (var p in Model)
+                {
+                    <div class="col-12 col-md-4 col-lg-3 mb-5">
+                        <div class="product-item text-center">
+
+                            <img src="@(string.IsNullOrWhiteSpace(p.ImageUrl) ? Url.Content("~/images/product-1.png") : p.ImageUrl)"
+                         class="img-fluid product-thumbnail" alt="@p.Name">
+
+                            <h3 class="product-title">@p.Name</h3>
+                            <strong class="product-price">$@p.Price</strong>
+
+                            <form asp-controller="Cart" asp-action="Add" method="post">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="productId" value="@p.Id" />
+                                <input type="hidden" name="qty" value="1" />
+
+                                <button type="submit" class="icon-cross border-0 bg-transparent p-0">
+                                    <img src="~/images/cross.svg" class="img-fluid" alt="Add to cart">
+                                </button>
+                            </form>
+
+                        </div>
+                    </div>
+                }
+            }
+
+        </div>
+    </div>
+</div>
