@@ -1,6 +1,7 @@
 ﻿@model List<ECommerceApp.Models.CartItem>
 @{
     ViewData["Title"] = "Cart";
+    bool hasStockIssue = Model != null && Model.Any(i => i.Product.Stock <= 0 || i.Quantity > i.Product.Stock);
 }
 
 <div class="hero">
@@ -19,6 +20,11 @@
 <div class="untree_co-section before-footer-section">
     <div class="container">
 
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger">@TempData["Error"]</div>
+        }
+
         @if (!Model.Any())
         {
             <p>Your cart is empty.</p>
@@ -30,7 +36,8 @@
                 <thead>
                     <tr>
                         <th>Product</th>
-                        <th style="width:180px;">Quantity</th>
+                        <th style="width:220px;">Quantity</th>
+                        <th>Stock</th>
                         <th>Price</th>
                         <th>Subtotal</th>
                         <th></th>
@@ -40,18 +47,39 @@
                     @foreach (var item in Model)
                     {
                         var subtotal = item.Product.Price * item.Quantity;
+
                         <tr>
-                            <td>@item.Product.Name</td>
+                            <td>
+                                @item.Product.Name
+                                @if (item.Product.Stock <= 0)
+                                {
+                                    <div class="text-danger fw-bold">Out of stock</div>
+                                }
+                                else if (item.Quantity > item.Product.Stock)
+                                {
+                                    <div class="text-danger fw-bold">
+                                        Only @item.Product.Stock left (reduce quantity)
+                                    </div>
+                                }
+                            </td>
+
                             <td>
                                 <form asp-controller="Cart" asp-action="Update" method="post" class="d-flex gap-2">
                                     @Html.AntiForgeryToken()
                                     <input type="hidden" name="id" value="@item.Id" />
-                                    <input type="number" name="qty" value="@item.Quantity" min="0" class="form-control form-control-sm" />
+                                    <input type="number"
+                                   name="qty"
+                                   value="@item.Quantity"
+                                   min="0"
+                                   class="form-control form-control-sm" />
                                     <button class="btn btn-sm btn-outline-primary" type="submit">Update</button>
                                 </form>
                             </td>
+
+                            <td>@item.Product.Stock</td>
                             <td>$@item.Product.Price</td>
                             <td>$@subtotal</td>
+
                             <td>
                                 <form asp-controller="Cart" asp-action="Remove" method="post">
                                     @Html.AntiForgeryToken()
@@ -64,7 +92,18 @@
                 </tbody>
             </table>
 
-            <a class="btn btn-primary" asp-controller="Checkout" asp-action="Index">Proceed to Checkout</a>
+            @if (hasStockIssue)
+            {
+                <div class="alert alert-warning">
+                    Fix out-of-stock items or reduce quantities before checkout.
+                </div>
+
+                <a class="btn btn-secondary" asp-controller="Shop" asp-action="Index">Continue Shopping</a>
+            }
+            else
+            {
+                <a class="btn btn-primary" asp-controller="Checkout" asp-action="Index">Proceed to Checkout</a>
+            }
         }
     </div>
 </div>

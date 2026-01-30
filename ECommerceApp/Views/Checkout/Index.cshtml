@@ -1,5 +1,12 @@
-﻿@{
+﻿@model List<ECommerceApp.Models.CartItem>
+@{
     ViewData["Title"] = "Checkout";
+
+    bool hasStockIssue = false;
+    if (Model != null)
+    {
+        hasStockIssue = Model.Any(i => i.Product.Stock <= 0 || i.Quantity > i.Product.Stock);
+    }
 }
 
 <div class="hero">
@@ -17,25 +24,97 @@
 
 <div class="untree_co-section before-footer-section">
     <div class="container">
-        <form method="post" asp-controller="Checkout" asp-action="PlaceOrder">
-            @Html.AntiForgeryToken()
 
-            <div class="mb-3">
-                <label class="form-label">Full Name</label>
-                <input name="fullName" class="form-control" />
+        @* ✅ Show server-side errors (ModelState) *@
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="alert alert-danger">
+                @foreach (var err in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <div>@err.ErrorMessage</div>
+                }
             </div>
+        }
 
-            <div class="mb-3">
-                <label class="form-label">Phone</label>
-                <input name="phone" class="form-control" />
-            </div>
+        @* ✅ Show cart stock status *@
+        @if (Model == null || !Model.Any())
+        {
+            <div class="alert alert-warning">Your cart is empty.</div>
+            <a class="btn btn-secondary" asp-controller="Shop" asp-action="Index">Go Shopping</a>
+        }
+        else
+        {
+            <h4 class="mb-3">Your Items</h4>
 
-            <div class="mb-3">
-                <label class="form-label">Address</label>
-                <input name="address" class="form-control" />
-            </div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Qty</th>
+                        <th>Stock</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Product.Name</td>
+                            <td>@item.Quantity</td>
+                            <td>@item.Product.Stock</td>
+                            <td>
+                                @if (item.Product.Stock <= 0)
+                                {
+                                    <span class="text-danger fw-bold">Out of stock</span>
+                                }
+                                else if (item.Quantity > item.Product.Stock)
+                                {
+                                    <span class="text-danger fw-bold">
+                                        Only @item.Product.Stock left (reduce quantity)
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="text-success">OK</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
 
-            <button class="btn btn-primary" type="submit">Place Order</button>
-        </form>
+            @if (hasStockIssue)
+            {
+                <div class="alert alert-warning">
+                    Some items in your cart are out of stock or exceed available stock.
+                    Please go back to cart and fix quantities.
+                </div>
+
+                <a class="btn btn-secondary" asp-controller="Cart" asp-action="Index">Back to Cart</a>
+            }
+            else
+            {
+                <form method="post" asp-controller="Checkout" asp-action="PlaceOrder">
+                    @Html.AntiForgeryToken()
+
+                    <div class="mb-3">
+                        <label class="form-label">Full Name</label>
+                        <input name="fullName" class="form-control" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Phone</label>
+                        <input name="phone" class="form-control" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Address</label>
+                        <input name="address" class="form-control" />
+                    </div>
+
+                    <button class="btn btn-primary" type="submit">Place Order</button>
+                </form>
+            }
+        }
     </div>
 </div>
